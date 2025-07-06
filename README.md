@@ -27,25 +27,32 @@ A Laravel package for Vipps/MobilePay payment integration designed for Laravel a
 - GuzzleHttp ^7.0
 - Carbon ^2.0||^3.0
 
-# VippsForLaravel
+## Configuration
 
-This package is for Laravel to accept Vipps/Mobilepay payments. Plug and play, you just need to register your business at MobilePay.dk/Vipps.no
+Add the following variables to your `.env` file:
 
-# Usage
-Put the following variables in your .env
+```env
+VIPPS_CLIENT_ID=your_client_id
+VIPPS_CLIENT_SECRET=your_client_secret
+VIPPS_MERCHANT_SERIAL_NUMBER=your_merchant_serial_number
+VIPPS_SUBSCRIPTION_KEY=your_subscription_key
+VIPPS_CURRENCY=NOK
+VIPPS_API_URL=https://apitest.vipps.no # For testing
+# VIPPS_API_URL=https://api.vipps.no # For production
+VIPPS_RETURN_URL=https://your-site.com/payment/callback
+VIPPS_WEBHOOK_ID=your_webhook_id
+VIPPS_WEBHOOK_SECRET=your_webhook_secret
 ```
-VIPPS_CLIENT_ID=
-VIPPS_CLIENT_SECRET=
-VIPPS_MERCHANT_SERIAL_NUMBER=
-VIPPS_SUBSCRIPTION_KEY=
-VIPPS_CURRENCY="DKK"
-VIPPS_API_URL=https://apitest.vipps.no #For testing
-VIPPS_API_URL=https://api.vipps.no #For production
-VIPPS_RETURN_URL=
-VIPPS_WEBHOOK_ID=
-VIPPS_WEBHOOK_SECRET=
+
+### Create Webhook
+
+To create a webhook, use the Artisan command:
+
+```bash
+php artisan vipps:webhook
 ```
-To produce a webhook, just use the command `php artisan vipps:webhook`
+
+This will guide you through the webhook creation process and provide you with the webhook ID and secret to add to your `.env` file.
 
 ## Installation
 
@@ -79,41 +86,59 @@ php artisan vendor:publish --tag="wirement-vipps-views"
 ### Basic Payment Creation
 
 ```php
-use Wirement\Vipps\Facades\Vipps;
+use Wirement\Vipps\Services\PaymentService;
 
-// Create a payment using the facade
-$payment = Vipps::createPayment([
-    'amount' => 10000, // Amount in øre (100 NOK)
-    'currency' => 'NOK',
-    'orderId' => 'order-123',
-    'description' => 'Test payment',
-    'redirectUrl' => 'https://your-site.com/payment/callback',
-    'userFlow' => 'WEB_REDIRECT'
-]);
+// Create a payment using the service
+$paymentService = new PaymentService();
+$paymentUrl = $paymentService->generatePaymentLink(
+    10000, // Amount in øre (100 NOK)
+    'order-123' // Invoice/Order number
+);
 
-// Get the payment URL
-$paymentUrl = $payment['url'];
+// Redirect user to payment URL
+return redirect()->to($paymentUrl);
+```
+
+### Payment with Order Lines
+
+```php
+use Wirement\Vipps\Services\PaymentService;
+
+$orderlines = [
+    [
+        'id' => '1',
+        'name' => 'Product name',
+        'quantity' => 1,
+        'price' => 100, // Price in NOK
+        'vat' => 0.25, // 25% VAT
+    ],
+];
+
+$paymentService = new PaymentService();
+$paymentUrl = $paymentService->generatePaymentLink(
+    10000, // Amount in øre
+    'order-123', // Invoice number
+    $orderlines // Optional order lines
+);
 ```
 
 ### Using with Livewire
 
 ```php
 use Livewire\Component;
-use Wirement\Vipps\Facades\Vipps;
+use Wirement\Vipps\Services\PaymentService;
 
 class PaymentComponent extends Component
 {
     public function createPayment()
     {
-        $payment = Vipps::createPayment([
-            'amount' => 5000, // 50 NOK
-            'currency' => 'NOK',
-            'orderId' => 'order-' . time(),
-            'description' => 'Product purchase',
-            'redirectUrl' => route('payment.callback'),
-        ]);
+        $paymentService = new PaymentService();
+        $paymentUrl = $paymentService->generatePaymentLink(
+            5000, // 50 NOK in øre
+            'order-' . time() // Invoice number
+        );
         
-        return redirect()->to($payment['url']);
+        return redirect()->to($paymentUrl);
     }
 }
 ```
@@ -122,21 +147,19 @@ class PaymentComponent extends Component
 
 ```php
 use Filament\Resources\Resource;
-use Wirement\Vipps\Facades\Vipps;
+use Wirement\Vipps\Services\PaymentService;
 
 // In your Filament resource
 Tables\Actions\Action::make('create_payment')
     ->label('Create Vipps Payment')
     ->action(function ($record) {
-        $payment = Vipps::createPayment([
-            'amount' => $record->total * 100, // Convert to øre
-            'currency' => 'NOK',
-            'orderId' => $record->id,
-            'description' => 'Order #' . $record->id,
-            'redirectUrl' => route('orders.callback', $record),
-        ]);
+        $paymentService = new PaymentService();
+        $paymentUrl = $paymentService->generatePaymentLink(
+            $record->total * 100, // Convert to øre
+            (string) $record->id // Invoice number
+        );
         
-        $record->update(['vipps_url' => $payment['url']]);
+        $record->update(['vipps_url' => $paymentUrl]);
     })
 ```
 

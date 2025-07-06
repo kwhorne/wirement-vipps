@@ -30,8 +30,8 @@ class CreateWebhookCommand extends Command
 
     private function createWebhook($url)
     {
-        $Vipps = new Vipps;
-        $token = $Vipps->getToken();
+        $vipps = new Vipps;
+        $token = $vipps->getToken();
         $client = new Client;
         $response = $client->post(config('vipps.api_url').'/webhooks/v1/webhooks', [
             'headers' => [

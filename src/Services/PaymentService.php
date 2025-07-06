@@ -54,17 +54,17 @@ class PaymentService
             'reference' => 'vipps-'.Str::uuid()->toString(),
             'userFlow' => 'WEB_REDIRECT',
             'returnUrl' => config('vipps.return_url'),
-            'recipt' => [
+            'receipt' => [
                 'orderLines' => [],
                 'bottomLine' => [
                     'currency' => config('vipps.currency'),
                     'posId' => $invoiceNumber,
-                    'reciptNumber' => $invoiceNumber,
+                    'receiptNumber' => $invoiceNumber,
                 ],
             ],
         ];
         if ($orderlines) {
-            $body['recipt']['orderLines'] = $this->handleOrderLines($orderlines);
+            $body['receipt']['orderLines'] = $this->handleOrderLines($orderlines);
         }
         $vipps = new Vipps;
         $token = $vipps->getToken();
