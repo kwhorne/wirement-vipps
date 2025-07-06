@@ -2,8 +2,8 @@
 
 namespace Wirement\Vipps\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
