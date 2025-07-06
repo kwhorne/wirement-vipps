@@ -2,10 +2,10 @@
 
 namespace Wirement\Vipps;
 
-use GuzzleHttp\Client;
-use Wirement\Vipps\Models\VippsToken;
-use Illuminate\Foundation\Application;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
+use Illuminate\Foundation\Application;
+use Wirement\Vipps\Models\VippsToken;
 
 class Vipps
 {
@@ -14,13 +14,14 @@ class Vipps
         // Use Carbon for better date handling
         $now = Carbon::now();
         // get the token from the database if it exists and is not expired
-        if(VippsToken::where('expires_at', '>', $now)->exists()){
+        if (VippsToken::where('expires_at', '>', $now)->exists()) {
             $token = VippsToken::where('expires_at', '>', $now)->first();
+
             return $token->token;
         }
 
         // send a request to the mobilepay api to get the access token with headers
-        $client = new Client();
+        $client = new Client;
 
         $response = $client->post(config('vipps.api_url').'/accesstoken/get', [
             'headers' => [
@@ -33,7 +34,7 @@ class Vipps
                 'Vipps-System-Version' => Application::VERSION,
                 'Vipps-System-Plugin-Name' => 'Wirement-Vipps',
                 'Vipps-System-Plugin-Version' => '1.0.0',
-            ]
+            ],
         ]);
 
         $body = $response->getBody();

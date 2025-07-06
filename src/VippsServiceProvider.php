@@ -21,7 +21,7 @@ class VippsServiceProvider extends PackageServiceProvider
     public function packageBooted()
     {
         $this->app->bind('vipps', function () {
-            return new Vipps();
+            return new Vipps;
         });
     }
 }

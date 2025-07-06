@@ -17,14 +17,14 @@ use Wirement\Vipps\Services\PaymentService;
 $payment = Vipps::createPayment([
     'amount' => 10000, // Amount in øre (100 NOK)
     'currency' => 'NOK',
-    'orderId' => 'order-' . time(),
+    'orderId' => 'order-'.time(),
     'description' => 'Test payment from Laravel',
     'redirectUrl' => 'https://your-site.com/payment/success',
-    'userFlow' => 'WEB_REDIRECT'
+    'userFlow' => 'WEB_REDIRECT',
 ]);
 
 // Example 2: Create a payment using the service directly
-$paymentService = new PaymentService();
+$paymentService = new PaymentService;
 $paymentLink = $paymentService->generatePaymentLink(
     10000, // Amount in øre
     'invoice-123',
@@ -35,7 +35,7 @@ $paymentLink = $paymentService->generatePaymentLink(
             'quantity' => 1,
             'price' => 100.00,
             'vat' => 0.25, // 25% VAT
-        ]
+        ],
     ]
 );
 

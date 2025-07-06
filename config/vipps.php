@@ -19,7 +19,7 @@ return [
     'return_url' => env('VIPPS_RETURN_URL'),
     'webhook_id' => env('VIPPS_WEBHOOK_ID'),
     'webhook_secret' => env('VIPPS_WEBHOOK_SECRET'),
-    
+
     /*
     |--------------------------------------------------------------------------
     | System Information

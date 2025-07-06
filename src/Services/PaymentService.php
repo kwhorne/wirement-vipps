@@ -8,7 +8,6 @@ use Wirement\Vipps\Vipps;
 
 class PaymentService
 {
-
     // Orderlines array:
     // [
     //     [
@@ -23,23 +22,23 @@ class PaymentService
     {
 
         $lines = [];
-        foreach($orderlines as $line) {
+        foreach ($orderlines as $line) {
             $lines[] = [
                 'name' => $line['name'],
                 'id' => $line['id'],
-                'totalAmount' => (int) ($line['price']*100),
-                'totalAmountExcludingTax' => (int) (round($line['price'] / (1 + $line['vat']), 2)*100),
-                'totalTaxAmount' => (int) (round($line['price'] - ($line['price'] / (1 + $line['vat'])), 2)*100),
+                'totalAmount' => (int) ($line['price'] * 100),
+                'totalAmountExcludingTax' => (int) (round($line['price'] / (1 + $line['vat']), 2) * 100),
+                'totalTaxAmount' => (int) (round($line['price'] - ($line['price'] / (1 + $line['vat'])), 2) * 100),
                 'taxPercentage' => (int) ($line['vat'] * 100),
                 'unitInfo' => [
-                    'unitPrice' => (int) ($line['price']*100),
+                    'unitPrice' => (int) ($line['price'] * 100),
                     'quantity' => $line['quantity'],
                 ],
             ];
         }
+
         return $lines;
     }
-
 
     public function generatePaymentLink($amount, $invoiceNumber, $orderlines = null)
     {
@@ -55,22 +54,22 @@ class PaymentService
             'reference' => 'vipps-'.Str::uuid()->toString(),
             'userFlow' => 'WEB_REDIRECT',
             'returnUrl' => env('VIPPS_RETURN_URL'),
-            'recipt' =>[
+            'recipt' => [
                 'orderLines' => [],
                 'bottomLine' => [
                     'currency' => env('VIPPS_CURRENCY'),
                     'posId' => $invoiceNumber,
                     'reciptNumber' => $invoiceNumber,
                 ],
-            ]
+            ],
         ];
-        if($orderlines) {
+        if ($orderlines) {
             $body['recipt']['orderLines'] = $this->handleOrderLines($orderlines);
         }
-        $vipps = new Vipps();
+        $vipps = new Vipps;
         $token = $vipps->getToken();
 
-        $client = new Client();
+        $client = new Client;
 
         $response = $client->post(env('VIPPS_API_URL').'/epayment/v1/payments', [
             'headers' => [

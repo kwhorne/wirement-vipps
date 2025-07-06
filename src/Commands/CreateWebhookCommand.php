@@ -2,10 +2,10 @@
 
 namespace Wirement\Vipps\Commands;
 
-use Illuminate\Console\Command;
-use Wirement\Vipps\Vipps;
 use GuzzleHttp\Client;
+use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use Wirement\Vipps\Vipps;
 
 class CreateWebhookCommand extends Command
 {
@@ -22,16 +22,17 @@ class CreateWebhookCommand extends Command
         $this->info('Please enter the URL that Vipps should send the webhook to:');
         $url = $this->ask('Webhook URL');
 
-        foreach($this->createWebhook($url) as $key => $value) {
+        foreach ($this->createWebhook($url) as $key => $value) {
             $this->info($key.': '.$value);
         }
         $this->info('Please store the above values in your .env file as VIPPS_WEBHOOK_ID and VIPPS_WEBHOOK_SECRET respectively.');
     }
 
-    private function createWebhook($url) {
-        $Vipps = new Vipps();
+    private function createWebhook($url)
+    {
+        $Vipps = new Vipps;
         $token = $Vipps->getToken();
-        $client = new Client();
+        $client = new Client;
         $response = $client->post(env('VIPPS_API_URL').'/webhooks/v1/webhooks', [
             'headers' => [
                 'Content-Type' => 'application/json',
@@ -64,13 +65,14 @@ class CreateWebhookCommand extends Command
                     'recurring.charge-captured.v1',
                     'recurring.charge-canceled.v1',
                     'recurring.charge-failed.v1',
-                    'recurring.charge-creation-failed.v1'
+                    'recurring.charge-creation-failed.v1',
                 ],
             ]),
         ]);
 
         $body = $response->getBody();
         $data = json_decode($body, true); // true to get associative array
+
         return [
             'id' => $data['id'],
             'secret' => $data['secret'],

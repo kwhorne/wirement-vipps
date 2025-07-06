@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class VippsToken extends Model
 {
     protected $table = 'vipps_tokens';
-    
+
     protected $fillable = [
         'token',
         'expires_at',
