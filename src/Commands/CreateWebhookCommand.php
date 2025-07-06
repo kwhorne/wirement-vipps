@@ -33,17 +33,17 @@ class CreateWebhookCommand extends Command
         $Vipps = new Vipps;
         $token = $Vipps->getToken();
         $client = new Client;
-        $response = $client->post(env('VIPPS_API_URL').'/webhooks/v1/webhooks', [
+        $response = $client->post(config('vipps.api_url').'/webhooks/v1/webhooks', [
             'headers' => [
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer '.$token,
-                'Ocp-Apim-Subscription-Key' => env('VIPPS_SUBSCRIPTION_KEY'),
-                'Merchant-Serial-Number' => env('VIPPS_MERCHANT_SERIAL_NUMBER'),
+                'Ocp-Apim-Subscription-Key' => config('vipps.subscription_key'),
+                'Merchant-Serial-Number' => config('vipps.merchant_serial_number'),
                 'Idempotency-Key' => Str::uuid()->toString(),
-                'Vipps-System-Name' => env('APP_NAME'),
+                'Vipps-System-Name' => config('vipps.system.name'),
                 'Vipps-System-Version' => \Illuminate\Foundation\Application::VERSION,
-                'Vipps-System-Plugin-Name' => 'Vipps-Laravel',
-                'Vipps-System-Plugin-Version' => '1.0.0',
+                'Vipps-System-Plugin-Name' => config('vipps.system.plugin_name'),
+                'Vipps-System-Plugin-Version' => config('vipps.system.plugin_version'),
             ],
             'body' => json_encode([
                 'url' => $url,

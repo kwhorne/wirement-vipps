@@ -7,6 +7,26 @@
 
 A Laravel package for Vipps/MobilePay payment integration designed for Laravel applications using Flux UI, Livewire, TailwindCSS, and Filament. This package provides a seamless integration with Vipps and MobilePay payment services.
 
+## Features
+
+- 🚀 **Easy Setup**: Simple configuration and installation
+- 💳 **Payment Creation**: Create Vipps payments with ease
+- 🔐 **Token Management**: Automatic token refresh and caching
+- 📡 **Webhook Support**: Easy webhook setup with Artisan command
+- 🏗️ **Laravel Integration**: Full Laravel ecosystem support
+- ⚡ **Flux UI Compatible**: Designed for Laravel Flux projects
+- 🔴 **Livewire Ready**: Includes Livewire component examples
+- 📊 **Filament Integration**: Ready-to-use Filament resources
+- 🏛️ **Modern Architecture**: Clean, service-oriented design
+- ⚙️ **Comprehensive Config**: All options in one config file
+
+## Requirements
+
+- PHP ^8.1
+- Laravel ^10.0||^11.0||^12.0
+- GuzzleHttp ^7.0
+- Carbon ^2.0||^3.0
+
 # VippsForLaravel
 
 This package is for Laravel to accept Vipps/Mobilepay payments. Plug and play, you just need to register your business at MobilePay.dk/Vipps.no

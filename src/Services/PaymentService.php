@@ -44,7 +44,7 @@ class PaymentService
     {
         $body = [
             'amount' => [
-                'currency' => env('VIPPS_CURRENCY'),
+                'currency' => config('vipps.currency'),
                 'value' => $amount,
             ],
             'paymentMethod' => [
@@ -53,11 +53,11 @@ class PaymentService
             'customerInteraction' => 'CUSTOMER_NOT_PRESENT',
             'reference' => 'vipps-'.Str::uuid()->toString(),
             'userFlow' => 'WEB_REDIRECT',
-            'returnUrl' => env('VIPPS_RETURN_URL'),
+            'returnUrl' => config('vipps.return_url'),
             'recipt' => [
                 'orderLines' => [],
                 'bottomLine' => [
-                    'currency' => env('VIPPS_CURRENCY'),
+                    'currency' => config('vipps.currency'),
                     'posId' => $invoiceNumber,
                     'reciptNumber' => $invoiceNumber,
                 ],
@@ -71,17 +71,17 @@ class PaymentService
 
         $client = new Client;
 
-        $response = $client->post(env('VIPPS_API_URL').'/epayment/v1/payments', [
+        $response = $client->post(config('vipps.api_url').'/epayment/v1/payments', [
             'headers' => [
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer '.$token,
-                'Ocp-Apim-Subscription-Key' => env('VIPPS_SUBSCRIPTION_KEY'),
-                'Merchant-Serial-Number' => env('VIPPS_MERCHANT_SERIAL_NUMBER'),
+                'Ocp-Apim-Subscription-Key' => config('vipps.subscription_key'),
+                'Merchant-Serial-Number' => config('vipps.merchant_serial_number'),
                 'Idempotency-Key' => Str::uuid()->toString(),
-                'Vipps-System-Name' => env('APP_NAME'),
+                'Vipps-System-Name' => config('vipps.system.name'),
                 'Vipps-System-Version' => \Illuminate\Foundation\Application::VERSION,
-                'Vipps-System-Plugin-Name' => 'Vipps-Laravel',
-                'Vipps-System-Plugin-Version' => '1.0.0',
+                'Vipps-System-Plugin-Name' => config('vipps.system.plugin_name'),
+                'Vipps-System-Plugin-Version' => config('vipps.system.plugin_version'),
             ],
             'body' => json_encode($body),
         ]);

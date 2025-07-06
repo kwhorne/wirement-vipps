@@ -3,7 +3,15 @@
 namespace Wirement\Vipps\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
+/**
+ * @property int $id
+ * @property string $token
+ * @property Carbon $expires_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ */
 class VippsToken extends Model
 {
     protected $table = 'vipps_tokens';
