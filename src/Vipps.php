@@ -40,7 +40,8 @@ class Vipps
         $body = $response->getBody();
         $data = json_decode($body, true); // true to get associative array
 
-        $expiresAt = $now->addSeconds($data['expires_in']);
+        $expiresIn = (int) ($data['expires_in'] ?? 0);
+        $expiresAt = $now->addSeconds($expiresIn);
 
         VippsToken::create([
             'token' => $data['access_token'],
